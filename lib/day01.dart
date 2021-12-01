@@ -1,17 +1,30 @@
 import 'input_reader.dart';
 
-Future<int> calculate() async {
+Future<int> part1() async {
   var measurements = await readInts('input/day01_input');
 
-  int previousMeasurement = measurements[0];
   int increases = 0;
 
-  for (int measurement in measurements.skip(1)) {
-    if (measurement > previousMeasurement) {
+  for (int i = 1; i < measurements.length; ++i) {
+    if (measurements[i] > measurements[i - 1]) {
       increases++;
     }
+  }
 
-    previousMeasurement = measurement;
+  return increases;
+}
+
+Future<int> part2() async {
+  var measurements = await readInts('input/day01_input');
+  int increases = 0;
+
+  for (int i = 0; i < measurements.length - 3; ++i) {
+    int firstElement = measurements[i];
+    int lastElement = measurements[i + 3];
+
+    if (lastElement > firstElement) {
+      increases++;
+    }
   }
 
   return increases;
