@@ -1,7 +1,7 @@
 import 'input_reader.dart';
 
-Future<int> part1() async {
-  var measurements = await readInts('input/day01_input.txt');
+int part1() {
+  var measurements = readInts('input/day01_input.txt');
 
   int increases = 0;
 
@@ -14,8 +14,8 @@ Future<int> part1() async {
   return increases;
 }
 
-Future<int> part2() async {
-  var measurements = await readInts('input/day01_input.txt');
+int part2() {
+  var measurements = readInts('input/day01_input.txt');
   int increases = 0;
 
   for (int i = 0; i < measurements.length - 3; ++i) {
