@@ -8,3 +8,7 @@ List<int> readInts(String filename) {
       .map((line) => int.parse(line))
       .toList();
 }
+
+List<String> readLines(String filename) {
+  return File(filename).readAsLinesSync().toList();
+}
