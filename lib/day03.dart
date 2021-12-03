@@ -11,6 +11,28 @@ int part1() {
   return gamma * epsilon;
 }
 
+int part2() {
+  var lines = readLines('input/day03_input.txt');
+  var lineLength = lines[0].length;
+
+  for (int i = 0; lines.length > 1 && i < lineLength; ++i) {
+    var commonBits = _mostCommonBits(lines);
+    var mostCommonBit = commonBits[i] >= 0 ? '1' : '0';
+    lines.removeWhere((line) => line[i] != mostCommonBit);
+  }
+  var oxygen = _binStringToInt(lines[0]);
+
+  lines = readLines('input/day03_input.txt');
+  for (int i = 0; lines.length > 1 && i < lineLength; ++i) {
+    var commonBits = _mostCommonBits(lines);
+    var mostCommonBit = commonBits[i] >= 0 ? '1' : '0';
+    lines.removeWhere((line) => line[i] == mostCommonBit);
+  }
+  var co2scrubber = _binStringToInt(lines[0]);
+
+  return oxygen * co2scrubber;
+}
+
 List<int> _mostCommonBits(List<String> lines) {
   var lineLength = lines[0].length;
   var commonBits = List<int>.filled(lineLength, 0);
@@ -33,3 +55,22 @@ int _gammaFromCommonBits(List<int> commonBits) {
 
   return gamma;
 }
+
+int _binStringToInt(String binary) {
+  int result = 0;
+  for (int i = 0; i < binary.length; ++i) {
+    result <<= 1;
+    result += binary[i] == '1' ? 1 : 0;
+  }
+
+  return result;
+}
+
+// String _negateBinString(String binary) {
+//   String negated = "";
+//   for (int i = 0; i < binary.length; i++) {
+//     negated += binary[i] == '1' ? '0' : '1';
+//   }
+
+//   return negated;
+// }
