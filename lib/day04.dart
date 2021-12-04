@@ -30,6 +30,34 @@ int part1() {
   return winningBoard!.sumOfUnmarkedNumbers() * lastDrawnNumber;
 }
 
+int part2() {
+  var input = readAsString('input/day04_input.txt');
+  var splitInput = input.split("\r\n\r\n");
+
+  var numbersToDraw = splitInput[0].split(",");
+  var boardsInput = splitInput.skip(1).toList();
+
+  var boards = boardsInput.map((boardInput) => Board(boardInput)).toList();
+
+  List<Board> previousWinners = [];
+  Board? winningBoard;
+  String lastDrawn = "";
+  for (var drawnNumber in numbersToDraw) {
+    for (Board board in boards.where((b) => !previousWinners.contains(b))) {
+      bool markedNumber = board.tryToMarkNumber(drawnNumber);
+      if (markedNumber && board.isBoardAWinner()) {
+        lastDrawn = drawnNumber;
+        winningBoard = board;
+        previousWinners.add(board);
+      }
+    }
+  }
+
+  int lastDrawnNumber = int.parse(lastDrawn);
+
+  return winningBoard!.sumOfUnmarkedNumbers() * lastDrawnNumber;
+}
+
 class Board {
   List<bool> completedNumbers = [];
   Map<String, int> numbersToIndexMap = {};
