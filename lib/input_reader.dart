@@ -10,3 +10,7 @@ List<int> readInts(String filename) {
 List<String> readLines(String filename) {
   return File(filename).readAsLinesSync().toList();
 }
+
+String readAsString(String filename) {
+  return File(filename).readAsStringSync();
+}
