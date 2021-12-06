@@ -1,29 +1,50 @@
 import 'input_reader.dart';
 
 int part1() {
+  return solvePuzzle(80);
+}
+
+int part2() {
+  return solvePuzzle(256);
+}
+
+int solvePuzzle(int days) {
   var input = readAsString('input/day06_input.txt');
   var numbers = input.split(',');
-  var states = numbers.map((s) => int.parse(s)).toList();
+  var initialStates = numbers.map((s) => int.parse(s)).toList();
 
-  simulateDays(states,80);
+  var statesCounter = initialStatesToStatesCounter(initialStates);
+  statesCounter = simulateDays(statesCounter, days);
 
-  return states.length;
+  return statesCounter.reduce((a, b) => a + b);
 }
 
-void simulateDays(List<int> states, int days) {
+List<int> initialStatesToStatesCounter(List<int> states) {
+  var statesCounter = List.filled(9, 0);
+  for(int initialState in states) {
+    statesCounter[initialState]++;
+  }
+
+  return statesCounter;
+}
+
+List<int> simulateDays(List<int> statesCounter, int days) {
+  var newCounter = statesCounter;
   for(int i=0; i<days; ++i) {
-    simulateDay(states);
+    newCounter = simulateDay(newCounter);
   }
+
+  return newCounter;
 }
 
-void simulateDay(List<int> states) {
-  int statesAtStartOfDay = states.length;
-  for(int i=0; i<statesAtStartOfDay; ++i) {
-    if(states[i]==0) {
-      states[i]=6;
-      states.add(8);
-    } else {
-      states[i]--;
-    }
+List<int> simulateDay(List<int> statesCounter) {
+  var newCounter = List.filled(9, 0);
+
+  for(int i = 0; i < 8; ++i) {
+    newCounter[i] = statesCounter[i+1];
   }
+  newCounter[8] = statesCounter[0];
+  newCounter[6] += statesCounter[0];
+
+  return newCounter;
 }
