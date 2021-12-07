@@ -9,40 +9,60 @@ int part1() {
   return getValueOfLowestTotalDistanceForArray(initialPositions);
 }
 
-int getValueOfLowestTotalDistanceForArray(List<int> array) {
-  int bestValue = median(array).floor();
-  int bestDistance = totalDistanceToTarget(array, bestValue);
+int part2() {
+  var input = readAsString('input/day07_input.txt');
 
+  var numbers = input.split(',');
+  var initialPositions = numbers.map((s) => int.parse(s)).toList();
+
+  return getValueOfLowestTotalDistanceForArray(initialPositions,
+      nonlinear: true);
+}
+
+int getValueOfLowestTotalDistanceForArray(List<int> array,
+    {bool nonlinear = false}) {
+  int bestValue = median(array).floor();
+  int bestDistance =
+      totalDistanceToTarget(array, bestValue, nonlinear: nonlinear);
   bool foundBetterValue;
+
+  bool tryADifferentValue(int value) {
+    int totalDistance =
+        totalDistanceToTarget(array, value, nonlinear: nonlinear);
+
+    if (totalDistance < bestDistance) {
+      bestValue = value;
+      bestDistance = totalDistance;
+      foundBetterValue = true;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   do {
     foundBetterValue = false;
-    int distanceToHigherValue = totalDistanceToTarget(array, bestValue + 1);
+    bool isDifferentValueBetter = tryADifferentValue(bestValue + 1);
 
-    if (distanceToHigherValue < bestDistance) {
-      bestValue = bestValue + 1;
-      bestDistance = distanceToHigherValue;
-      foundBetterValue = true;
-      continue;
-    }
+    if (isDifferentValueBetter) continue;
 
-    int distanceToLowerValue = totalDistanceToTarget(array, bestValue - 1);
-
-    if (distanceToLowerValue < bestDistance) {
-      bestValue = bestValue - 1;
-      bestDistance = distanceToLowerValue;
-      foundBetterValue = true;
-    }
+    tryADifferentValue(bestValue - 1);
   } while (foundBetterValue);
 
   return bestDistance;
 }
 
-int totalDistanceToTarget(List<int> array, int target) {
+int totalDistanceToTarget(List<int> array, int target, {nonlinear = false}) {
   int total = 0;
   for (int number in array) {
-    total += (number - target).abs();
+    int distance = (number - target).abs();
+    total += nonlinear ? getNonLinearValue(distance) : distance;
   }
   return total;
+}
+
+int getNonLinearValue(int n) {
+  return ((n + 1) * n / 2).floor();
 }
 
 num median(List<num> a) {

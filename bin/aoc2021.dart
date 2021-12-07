@@ -19,12 +19,13 @@ void main(List<String> arguments) {
   print('Day 4 part 1: ${day4.part1()}');
   print('Day 4 part 2: ${day4.part2()}');
 
-  print('Day 5 part 1: ${day5.part1()}');
+  // Too expensive to rerun every time xd
+  // print('Day 5 part 1: ${day5.part1()}');
   // print('Day 5 part 2: ${day5.part2()}');
 
   print('Day 6 part 1: ${day6.part1()}');
   print('Day 6 part 2: ${day6.part2()}');
 
   print('Day 7 part 1: ${day7.part1()}');
-  // print('Day 6 part 2: ${day7.part2()}');
+  print('Day 7 part 2: ${day7.part2()}');
 }
