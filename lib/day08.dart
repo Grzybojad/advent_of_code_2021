@@ -15,7 +15,84 @@ int part1() {
 int part2() {
   var inputLines = readLines('input/day08_input.txt');
 
-  return segmentsToDigit(stringValueToSegments('fac'));
+  int sum = 0;
+  for (var inputLine in inputLines) {
+    var splitLine = inputLine.split(" | ");
+    var input = splitLine[0].split(" ").join().split('');
+    var output = splitLine[1].split(" ");
+
+    Map<String, int> inputCharacterScores = {};
+
+    for (var inputChar in input) {
+      if (!inputCharacterScores.containsKey(inputChar)) {
+        inputCharacterScores[inputChar] =
+            input.where((e) => e == inputChar).length;
+      }
+    }
+
+    var digits = [];
+    for (var outputValue in output) {
+      var totalScore = outputValue
+          .split('')
+          .map((e) => inputCharacterScores[e]!)
+          .reduce((a, b) => a + b);
+
+      digits.add(digitsByCommonality(totalScore));
+    }
+
+    var parsedDigits = int.parse(digits.map((e) => e.toString()).join());
+    sum += parsedDigits;
+  }
+
+  return sum;
+}
+
+int segmentsCommonality(String segments) {
+  return segments
+      .split('')
+      .map((e) => segmentCommonality(e))
+      .reduce((a, b) => a + b);
+}
+
+int digitsByCommonality(int commonality) {
+  for (int i = 0; i <= 9; ++i) {
+    if (commonality == segmentsCommonality(getDigitSegments(i))) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+int segmentCommonality(String segment) {
+  Map<String, int> segmentCounts = {
+    "a": 8,
+    "b": 6,
+    "c": 8,
+    "d": 7,
+    "e": 4,
+    "f": 9,
+    "g": 7,
+  };
+
+  return segmentCounts[segment]!;
+}
+
+String getDigitSegments(int digit) {
+  var digitSegments = {
+    0: "abcefg",
+    1: "cf",
+    2: "acdeg",
+    3: "acdfg",
+    4: "bcdf",
+    5: "abdfg",
+    6: "abdefg",
+    7: "acf",
+    8: "abcdefg",
+    9: "abcdfg",
+  };
+
+  return digitSegments[digit]!;
 }
 
 int countEasyDigits(List<String> values) {
@@ -26,46 +103,4 @@ bool isEasyDigit(String value) {
   var lengthOfEasyValues = {2, 4, 3, 7};
 
   return lengthOfEasyValues.contains(value.length);
-}
-
-// int decodeDigit(Map<String, String> config, String value) {}
-
-int stringValueToSegments(String value) {
-  Map<String, int> config = {
-    'a': 0x1000000,
-    'b': 0x0100000,
-    'c': 0x0010000,
-    'd': 0x0001000,
-    'e': 0x0000100,
-    'f': 0x0000010,
-    'g': 0x0000001,
-  };
-
-  int segments = 0;
-  for (var segmentLetter in value.split('')) {
-    var segmentValue = config[segmentLetter];
-    if (segmentValue == null) {
-      throw "invalid segment value";
-    } else {
-      segments += segmentValue;
-    }
-  }
-
-  return segments;
-}
-
-int segmentsToDigit(int segments) {
-  //                abcdefg
-  if (segments == 0x1110111) return 0;
-  if (segments == 0x0010010) return 1;
-  if (segments == 0x1011101) return 2;
-  if (segments == 0x1011011) return 3;
-  if (segments == 0x0111010) return 4;
-  if (segments == 0x1101011) return 5;
-  if (segments == 0x1101111) return 6;
-  if (segments == 0x1010010) return 7;
-  if (segments == 0x1111111) return 8;
-  if (segments == 0x1111011) return 9;
-
-  throw "invalid segments";
 }
