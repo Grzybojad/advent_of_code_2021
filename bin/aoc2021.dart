@@ -7,6 +7,7 @@ import 'package:aoc2021/day06.dart' as day6;
 import 'package:aoc2021/day07.dart' as day7;
 import 'package:aoc2021/day08.dart' as day8;
 import 'package:aoc2021/day09.dart' as day9;
+import 'package:aoc2021/day10.dart' as day10;
 
 void main(List<String> arguments) {
   print('Day 1 part 1: ${day1.part1()}');
@@ -36,4 +37,6 @@ void main(List<String> arguments) {
 
   print('Day 9 part 1: ${day9.part1()}');
   print('Day 9 part 2: ${day9.part2()}');
+
+  print('Day 10 part 1: ${day10.part1()}');
 }
