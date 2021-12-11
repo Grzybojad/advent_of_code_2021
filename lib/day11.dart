@@ -21,6 +21,26 @@ int part1() {
   return flashes;
 }
 
+int part2() {
+  var inputLines = readLines('input/day11_input.txt');
+
+  var grid = Grid.linesToGrid(inputLines);
+
+  int step = 0;
+  int flashesThisStep = 0;
+  do {
+    step++;
+    flashesThisStep = 0;
+    increaseEnergyBy1(grid);
+
+    while (doesAnyPointWantToFlash(grid)) {
+      flashesThisStep += handleStepFlashes(grid);
+    }
+  } while (flashesThisStep != grid.width() * grid.height());
+
+  return step;
+}
+
 void increaseEnergyBy1(Grid grid) {
   for (int y = 0; y < grid.height(); ++y) {
     for (int x = 0; x < grid.width(); ++x) {

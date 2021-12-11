@@ -43,4 +43,5 @@ void main(List<String> arguments) {
   print('Day 10 part 1: ${day10.part2()}');
 
   print('Day 11 part 1: ${day11.part1()}');
+  print('Day 11 part 1: ${day11.part2()}');
 }
