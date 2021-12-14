@@ -2,73 +2,102 @@ import 'dart:math';
 import 'input_reader.dart';
 
 int part1() {
-  var input = readAsString('input/day14_input.txt');
+  return solvePuzzle(10);
+}
 
-  var splitInput = input.split("\r\n\r\n");
-  var templateLine = splitInput[0];
-  var pairInsetionLines = splitInput[1].split("\r\n");
+int part2() {
+  return solvePuzzle(40);
+}
 
-  var polymer = templateLine;
+int solvePuzzle(int steps) {
+  var lines = readLines('input/day14_input.txt');
+  var template = lines[0];
 
-  Map<String, String> rules = insertionRulesFromLines(pairInsetionLines);
+  var rules = insertionRulesFromLines(lines.skip(2).toList());
 
-  int steps = 10;
+  var pairCounts = templateToPairCounts(template);
+
   for (int i = 0; i < steps; ++i) {
-    polymer = getPolymerAfterStep(rules, polymer);
+    pairCounts = pairCountsAfterStep(pairCounts, rules);
   }
 
-  var counts = characterCounts(polymer);
+  Map<String, int> letterCounts = {};
+  for (var pair in pairCounts.keys) {
+    var letter = pair[0];
+    var letterCount = letterCounts[letter];
 
-  var minCharacterCount = counts.values.reduce(min);
-  var maxCharacterCount = counts.values.reduce(max);
+    if (letterCount == null) {
+      letterCounts[letter] = pairCounts[pair]!;
+    } else {
+      letterCounts[letter] = letterCount + pairCounts[pair]!;
+    }
+  }
+  var lastLetter = template[template.length - 1];
+  letterCounts[lastLetter] = letterCounts[lastLetter]! + 1;
+
+  var minCharacterCount = letterCounts.values.reduce(min);
+  var maxCharacterCount = letterCounts.values.reduce(max);
 
   return maxCharacterCount - minCharacterCount;
 }
 
-Map<String, String> insertionRulesFromLines(List<String> lines) {
-  Map<String, String> insertionRules = {};
+Map<String, Set<String>> insertionRulesFromLines(List<String> lines) {
+  Map<String, Set<String>> insertionRules = {};
 
   for (var line in lines.where((e) => e.length > 1)) {
     var splitLine = line.split(" -> ");
     String match = splitLine[0];
-    String replacement = splitLine[1];
+    var replacements = {
+      match[0] + splitLine[1],
+      splitLine[1] + match[1],
+    };
 
-    insertionRules[match] = replacement;
+    insertionRules[match] = replacements;
   }
 
   return insertionRules;
 }
 
-Map<String, int> characterCounts(String line) {
-  Map<String, int> characterCounts = {};
+Map<String, int> templateToPairCounts(String template) {
+  Map<String, int> pairCounts = {};
 
-  for (var char in line.split('')) {
-    if (characterCounts.containsKey(char)) {
-      var val = characterCounts[char]!;
-      characterCounts[char] = val + 1;
+  for (int i = 0; i < template.length - 1; ++i) {
+    String pair = template[i] + template[i + 1];
+
+    if (pairCounts.containsKey(pair)) {
+      var val = pairCounts[pair]!;
+      pairCounts[pair] = val + 1;
     } else {
-      characterCounts[char] = 1;
+      pairCounts[pair] = 1;
     }
   }
 
-  return characterCounts;
+  return pairCounts;
 }
 
-String getPolymerAfterStep(Map<String, String> rules, String polymer) {
-  String newPolymer = "";
+Map<String, int> pairCountsAfterStep(
+    Map<String, int> pairCounts, Map<String, Set<String>> rules) {
+  Map<String, int> newPairCounts = Map<String, int>.from(pairCounts);
 
-  for (int i = 0; i < polymer.length - 1; ++i) {
-    String pair = polymer[i] + polymer[i + 1];
-    newPolymer += polymer[i];
+  for (var rule in rules.keys) {
+    var rulePairCount = pairCounts[rule];
 
-    var valueToInsert = rules[pair];
+    if (rulePairCount == null || rulePairCount == 0) continue;
 
-    if (valueToInsert != null) {
-      newPolymer += valueToInsert;
+    newPairCounts[rule] = newPairCounts[rule]! - pairCounts[rule]!;
+
+    var toAdd = rules[rule]!;
+
+    for (var extra in toAdd) {
+      var oldValue = newPairCounts[extra];
+
+      if (oldValue == null) {
+        newPairCounts[extra] = pairCounts[rule]!;
+      } else {
+        newPairCounts[extra] = oldValue + pairCounts[rule]!;
+      }
     }
   }
 
-  newPolymer += polymer[polymer.length - 1];
-
-  return newPolymer;
+  return newPairCounts;
 }
