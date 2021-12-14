@@ -31,7 +31,8 @@ int part2() {
     foldByInstructionsLine(points, line);
   }
 
-  printPoints(points);
+  // Uncomment to show solution
+  // printPoints(points);
 
   return points.length;
 }
