@@ -1,8 +1,14 @@
+import 'dart:math';
+
 class Grid {
   List<List<int>> _grid = [];
 
   Grid(List<List<int>> gridNumbers) {
     _grid = gridNumbers;
+  }
+
+  Grid.filledGrid(int width, int height, int fillValue) {
+    _grid = List.filled(height, List<int>.filled(width, fillValue));
   }
 
   Grid.linesToGrid(List<String> lines) {
@@ -16,9 +22,17 @@ class Grid {
   int width() => _grid[0].length;
   int height() => _grid.length;
 
+  int getValueAtPoint(Point p) => getValueAt(p.x.floor(), p.y.floor());
+  void setValueAtPoint(Point p, int value) =>
+      setValueAt(p.x.floor(), p.y.floor(), value);
+  void addValueAtPoint(Point p, int valueToAdd) =>
+      addValueAt(p.x.floor(), p.y.floor(), valueToAdd);
+
   int getValueAt(int x, int y) => _grid[y][x];
   void setValueAt(int x, int y, int value) => _grid[y][x] = value;
   void addValueAt(int x, int y, int valueToAdd) => _grid[y][x] += valueToAdd;
+
+  bool isPointOutsideGrid(Point p) => isOutsideGrid(p.x.floor(), p.y.floor());
 
   bool isOutsideGrid(int x, int y) {
     if (x < 0) return true;
@@ -29,10 +43,20 @@ class Grid {
     return false;
   }
 
+  List<Point> neighbourPositions(Point p) {
+    List<Point> neighours = [];
+    if (!isPointOutsideGrid(p + Point(0, 1))) neighours.add(p + Point(0, 1));
+    if (!isPointOutsideGrid(p + Point(1, 0))) neighours.add(p + Point(1, 0));
+    if (!isPointOutsideGrid(p + Point(0, -1))) neighours.add(p + Point(0, -1));
+    if (!isPointOutsideGrid(p + Point(-1, 0))) neighours.add(p + Point(-1, 0));
+
+    return neighours;
+  }
+
   bool anyValueMatchesTest(bool Function(int) test) =>
       _grid.any((row) => row.any(test));
 
   void printGrid() {
-    _grid.map((e) => e.join()).forEach(print);
+    _grid.map((e) => e.join(" ")).forEach(print);
   }
 }
