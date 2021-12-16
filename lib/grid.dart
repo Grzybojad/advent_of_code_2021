@@ -22,10 +22,10 @@ class Grid {
   int width() => _grid[0].length;
   int height() => _grid.length;
 
-  int getValueAtPoint(Point p) => getValueAt(p.x.floor(), p.y.floor());
-  void setValueAtPoint(Point p, int value) =>
+  int getValueAtPoint(Point<int> p) => getValueAt(p.x, p.y);
+  void setValueAtPoint(Point<int> p, int value) =>
       setValueAt(p.x.floor(), p.y.floor(), value);
-  void addValueAtPoint(Point p, int valueToAdd) =>
+  void addValueAtPoint(Point<int> p, int valueToAdd) =>
       addValueAt(p.x.floor(), p.y.floor(), valueToAdd);
 
   int getValueAt(int x, int y) => _grid[y][x];
@@ -43,8 +43,8 @@ class Grid {
     return false;
   }
 
-  List<Point> neighbourPositions(Point p) {
-    List<Point> neighours = [];
+  List<Point<int>> neighbourPositions(Point<int> p) {
+    List<Point<int>> neighours = [];
     if (!isPointOutsideGrid(p + Point(0, 1))) neighours.add(p + Point(0, 1));
     if (!isPointOutsideGrid(p + Point(1, 0))) neighours.add(p + Point(1, 0));
     if (!isPointOutsideGrid(p + Point(0, -1))) neighours.add(p + Point(0, -1));
