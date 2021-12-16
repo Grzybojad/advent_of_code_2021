@@ -1,4 +1,5 @@
 import 'input_reader.dart';
+import 'dart:math';
 
 const int literalValueId = 4;
 int index = 0;
@@ -17,7 +18,17 @@ int part1() {
   return totalVersion;
 }
 
-void exectuteInstuction() {
+int part2() {
+  var input = readAsString('input/day16_input.txt');
+  binary = hexToBinaryString(input);
+  index = 0;
+
+  int result = exectuteInstuction();
+
+  return result;
+}
+
+int exectuteInstuction() {
   int verStart = index;
   int verEnd = verStart + 3;
   int typeStart = verEnd;
@@ -28,14 +39,15 @@ void exectuteInstuction() {
 
   index = typeEnd;
   if (typeId == literalValueId) {
-    int literalValue = readLiteralValue();
+    return readLiteralValue();
   } else {
-    executeOperatorInstruction();
+    return executeOperatorInstruction(typeId);
   }
 }
 
-void executeOperatorInstruction() {
+int executeOperatorInstruction(int typeId) {
   var lengthTypeId = binary[index];
+  List<int> results = [];
 
   if (lengthTypeId == '0') {
     int groupStart = index + 1;
@@ -45,7 +57,7 @@ void executeOperatorInstruction() {
 
     index = groupEnd;
     while (index < groupEnd + totalLength) {
-      exectuteInstuction();
+      results.add(exectuteInstuction());
     }
   } else {
     int groupStart = index + 1;
@@ -55,9 +67,28 @@ void executeOperatorInstruction() {
 
     index = groupEnd;
     for (int i = 0; i < subPackets; i++) {
-      exectuteInstuction();
+      results.add(exectuteInstuction());
     }
   }
+
+  switch (typeId) {
+    case 0:
+      return results.reduce((a, b) => a + b);
+    case 1:
+      return results.reduce((a, b) => a * b);
+    case 2:
+      return results.reduce(min);
+    case 3:
+      return results.reduce(max);
+    case 5:
+      return results.reduce((a, b) => a > b ? 1 : 0);
+    case 6:
+      return results.reduce((a, b) => a < b ? 1 : 0);
+    case 7:
+      return results.reduce((a, b) => a == b ? 1 : 0);
+  }
+
+  return -1;
 }
 
 int readLiteralValue() {
