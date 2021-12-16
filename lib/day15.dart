@@ -17,6 +17,17 @@ int part1() {
   return minCost;
 }
 
+int part2() {
+  var lines = readLines('input/day15_input.txt');
+
+  var grid = Grid.biggerAndMoreAnnoying(lines, 5);
+
+  var minCost =
+      aStar(grid, Point(0, 0), Point(grid.width() - 1, grid.height() - 1));
+
+  return minCost;
+}
+
 int getPathCost(
     Grid grid, HashMap<Point<int>, Point<int>> cameFrom, Point<int> current) {
   int pathCost = 0;

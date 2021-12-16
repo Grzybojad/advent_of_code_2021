@@ -19,6 +19,39 @@ class Grid {
     _grid = gridNumbers;
   }
 
+  Grid.biggerAndMoreAnnoying(List<String> lines, int mult) {
+    int ogWidth = lines[0].length;
+    int ogHeight = lines.length;
+    int width = ogWidth * mult;
+    int height = ogHeight * mult;
+
+    _grid = List.generate(height, (_) => List.filled(width, 0));
+
+    var ogNumbers = lines
+        .map((line) => line.split('').map((c) => int.parse(c)).toList())
+        .toList();
+
+    for (int multY = 0; multY < mult; multY++) {
+      for (int multX = 0; multX < mult; multX++) {
+        int bonus = multX + multY;
+        for (int ogY = 0; ogY < ogHeight; ogY++) {
+          for (int ogX = 0; ogX < ogWidth; ogX++) {
+            int x = ogX + multX * ogWidth;
+            int y = ogY + multY * ogHeight;
+            int ogValue = ogNumbers[ogY][ogX];
+            int val = (ogValue + bonus);
+            val = val > 9 ? val - 9 : val;
+            setValueAt(x, y, val);
+          }
+        }
+      }
+    }
+
+    for (int ogY = 0; ogY < ogHeight; ogY++) {
+      for (int ogX = 0; ogX < ogWidth; ogX++) {}
+    }
+  }
+
   int width() => _grid[0].length;
   int height() => _grid.length;
 
@@ -57,6 +90,6 @@ class Grid {
       _grid.any((row) => row.any(test));
 
   void printGrid() {
-    _grid.map((e) => e.join(" ")).forEach(print);
+    _grid.map((e) => e.join("")).forEach(print);
   }
 }
