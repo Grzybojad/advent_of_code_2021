@@ -4,6 +4,14 @@ import 'input_reader.dart';
 import 'grid.dart';
 
 int part1() {
+  return solvePuzzle(2);
+}
+
+int part2() {
+  return solvePuzzle(50);
+}
+
+int solvePuzzle(int steps) {
   var input = readAsString('input/day20_input.txt');
 
   var splitInput = input.split("\r\n\r\n");
@@ -11,7 +19,6 @@ int part1() {
   var image = splitInput[1];
   var imageGrid = Grid.hashToGrid(image.split("\r\n"));
 
-  int steps = 2;
   int outsideValue = 0;
   for (int i = 0; i < steps; ++i) {
     imageGrid = enhanceImage(imageGrid, enhancementAlgorithm, outsideValue);
@@ -31,7 +38,7 @@ int countLightPixels(Grid imageGrid) {
 
 Grid enhanceImage(
     Grid imageGrid, String enhancementAlgorithm, int outsideValue) {
-  int extraSpace = 4;
+  int extraSpace = 2;
   Grid newImage = Grid.filledGrid(imageGrid.width() + extraSpace * 2,
       imageGrid.height() + extraSpace * 2, 0);
 
