@@ -8,12 +8,21 @@ class Grid {
   }
 
   Grid.filledGrid(int width, int height, int fillValue) {
-    _grid = List.filled(height, List<int>.filled(width, fillValue));
+    // _grid = List.filled(height, List<int>.filled(width, fillValue));
+    _grid = List.generate(height, (_) => List.filled(width, 0));
   }
 
   Grid.linesToGrid(List<String> lines) {
     var gridNumbers = lines
         .map((line) => line.split('').map((c) => int.parse(c)).toList())
+        .toList();
+
+    _grid = gridNumbers;
+  }
+
+  Grid.hashToGrid(List<String> lines) {
+    var gridNumbers = lines
+        .map((line) => line.split('').map((c) => c == "#" ? 1 : 0).toList())
         .toList();
 
     _grid = gridNumbers;
@@ -89,7 +98,14 @@ class Grid {
   bool anyValueMatchesTest(bool Function(int) test) =>
       _grid.any((row) => row.any(test));
 
+  int count(bool Function(int) test) =>
+      _grid.map((row) => row.where(test).length).reduce((a, b) => a + b);
+
   void printGrid() {
     _grid.map((e) => e.join("")).forEach(print);
+  }
+
+  void printHashGrid() {
+    _grid.map((e) => e.map((e) => e == 1 ? "#" : ".").join("")).forEach(print);
   }
 }

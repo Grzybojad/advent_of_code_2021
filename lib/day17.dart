@@ -32,6 +32,41 @@ int part1() {
   return maxHeightOfShot(velY);
 }
 
+int part2() {
+  var input = readAsString('input/day17_input.txt');
+
+  Bounds target = Bounds.fromInput(input);
+
+  var possibleVelX = [];
+
+  // for (int i = -1000; i <= 1000; i++) {
+  //   int sumOfI = sumOfN(i);
+  //   if (sumOfI >= target.minX) {
+  //     possibleVelX.add(i);
+  //   }
+  // }
+  // print(possibleVelX.length);
+
+  var possibilities = 0;
+  for (int velX = 1; velX <= 1000; velX++) {
+    for (int velY = -100; velY <= 2000; velY++) {
+      if (willProbeHitTarget(target, velX, velY)) {
+        possibilities++;
+      }
+    }
+  }
+
+  // int velY = -1;
+
+  // for (int i = velX; i <= 1000; i++) {
+  //   if (willProbeHitTarget(target, velX, i)) {
+  //     velY = i;
+  //   }
+  // }
+
+  return possibilities;
+}
+
 bool willProbeHitTarget(Bounds target, int velX, int velY) {
   int x = 0;
   int y = 0;

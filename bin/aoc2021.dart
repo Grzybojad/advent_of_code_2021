@@ -16,6 +16,9 @@ import 'package:aoc2021/day15.dart' as day15;
 import 'package:aoc2021/day16.dart' as day16;
 import 'package:aoc2021/day17.dart' as day17;
 
+import 'package:aoc2021/day19.dart' as day19;
+import 'package:aoc2021/day20.dart' as day20;
+
 void main(List<String> arguments) {
   print('Day 1 part 1: ${day1.part1()}');
   print('Day 1 part 2: ${day1.part2()}');
@@ -60,12 +63,19 @@ void main(List<String> arguments) {
   print('Day 14 part 1: ${day14.part1()}');
   print('Day 14 part 2: ${day14.part2()}');
 
-// Too expensive to rerun every time xd
+  // Too expensive to rerun every time xd
   // print('Day 15 part 1: ${day15.part1()}');
   // print('Day 15 part 2: ${day15.part2()}');
 
   print('Day 16 part 1: ${day16.part1()}');
   print('Day 16 part 2: ${day16.part2()}');
 
-  print('Day 17 part 1: ${day17.part1()}');
+  // Too expensive to rerun every time xd
+  // print('Day 17 part 1: ${day17.part1()}');
+  // print('Day 17 part 2: ${day17.part2()}');
+
+  // Not finished
+  // print('Day 19 part 1: ${day19.part1()}');
+
+  print('Day 20 part 1: ${day20.part1()}');
 }
