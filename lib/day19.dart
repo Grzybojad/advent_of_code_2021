@@ -1,5 +1,4 @@
 import 'input_reader.dart';
-import 'dart:math';
 import 'package:vector_math/vector_math.dart';
 
 int part1() {

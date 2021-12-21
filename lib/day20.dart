@@ -1,5 +1,4 @@
-import 'package:aoc2021/day05.dart';
-
+import 'dart:math';
 import 'input_reader.dart';
 import 'grid.dart';
 
@@ -55,7 +54,7 @@ Grid enhanceImage(
   return newImage;
 }
 
-int getWindowValue(Grid image, Point pixelPos, int outsideValue) {
+int getWindowValue(Grid image, Point<int> pixelPos, int outsideValue) {
   var valueString = "";
 
   for (int y = pixelPos.y - 1; y <= pixelPos.y + 1; ++y) {
