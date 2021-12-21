@@ -11,15 +11,12 @@ int part1() {
 
   const int pointToWin = 1000;
 
-  // bool firstPlayer = true;
   int rollCount = 0;
   while (!game.gameOver(pointToWin)) {
     var totalRoll = (rollCount + 2) * 3;
     rollCount += 3;
 
     game = game.gameAfterMove(totalRoll);
-
-    // firstPlayer = !firstPlayer;
   }
 
   return game.getLoser().points * rollCount;
@@ -58,12 +55,6 @@ int part2() {
         universes[newGame] = count * copies + (universes[newGame] ?? 0);
       }
     }
-    // print("\ngames ${universes.values.reduce((a, b) => a + b)}:");
-    // universes.forEach((key, value) {
-    //   if (!key.gameOver(pointsToWin)) {
-    //     print("$key: $value");
-    //   }
-    // });
   }
 
   var totalWins = universes.values.reduce((a, b) => a + b);
