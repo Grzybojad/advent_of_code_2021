@@ -11,15 +11,15 @@ int part1() {
 
   const int pointToWin = 1000;
 
-  bool firstPlayer = true;
+  // bool firstPlayer = true;
   int rollCount = 0;
   while (!game.gameOver(pointToWin)) {
     var totalRoll = (rollCount + 2) * 3;
     rollCount += 3;
 
-    game = game.gameAfterMove(firstPlayer, totalRoll);
+    game = game.gameAfterMove(totalRoll);
 
-    firstPlayer = !firstPlayer;
+    // firstPlayer = !firstPlayer;
   }
 
   return game.getLoser().points * rollCount;
@@ -36,8 +36,6 @@ int part2() {
 
   const int pointsToWin = 21;
 
-  bool firstPlayer = true;
-
   while (universes.keys.any((game) => !game.gameOver(pointsToWin))) {
     var unfinishedGamesKeys =
         universes.keys.where((g) => !g.gameOver(pointsToWin)).toList();
@@ -49,7 +47,7 @@ int part2() {
       for (int r1 = 1; r1 <= 3; r1++) {
         for (int r2 = 1; r2 <= 3; r2++) {
           for (int r3 = 1; r3 <= 3; r3++) {
-            var result = game.gameAfterMove(firstPlayer, r1 + r2 + r3);
+            var result = game.gameAfterMove(r1 + r2 + r3);
             gamesAfterRolls[result] = (gamesAfterRolls[result] ?? 0) + 1;
           }
         }
@@ -60,7 +58,6 @@ int part2() {
         universes[newGame] = count * copies + (universes[newGame] ?? 0);
       }
     }
-    firstPlayer = !firstPlayer;
     // print("\ngames ${universes.values.reduce((a, b) => a + b)}:");
     // universes.forEach((key, value) {
     //   if (!key.gameOver(pointsToWin)) {
@@ -87,11 +84,12 @@ int part2() {
 class Game {
   Player player1;
   Player player2;
+  bool player1Turn = false;
 
-  Game(this.player1, this.player2);
+  Game(this.player1, this.player2, {this.player1Turn = true});
 
-  Game gameAfterMove(bool isPlayer1, int spaces) {
-    var currentPlayer = isPlayer1 ? player1 : player2;
+  Game gameAfterMove(int spaces) {
+    var currentPlayer = player1Turn ? player1 : player2;
     int pos = currentPlayer.pos;
     int points = currentPlayer.points;
 
@@ -100,10 +98,10 @@ class Game {
     points += pos;
 
     var newPlayer = Player(pos: pos, points: points);
-    var newGamePlayer1 = isPlayer1 ? newPlayer : Player.copy(player1);
-    var newGamePlayer2 = !isPlayer1 ? newPlayer : Player.copy(player2);
+    var newGamePlayer1 = player1Turn ? newPlayer : Player.copy(player1);
+    var newGamePlayer2 = !player1Turn ? newPlayer : Player.copy(player2);
 
-    return Game(newGamePlayer1, newGamePlayer2);
+    return Game(newGamePlayer1, newGamePlayer2, player1Turn: !player1Turn);
   }
 
   bool gameOver(int pointToWin) =>
@@ -132,7 +130,8 @@ class Game {
     }
     return other is Game &&
         player1 == other.player1 &&
-        player2 == other.player2;
+        player2 == other.player2 &&
+        player1Turn == player1Turn;
   }
 
   @override
@@ -140,6 +139,7 @@ class Game {
     int result = 17;
     result = 37 * result + player1.hashCode;
     result = 37 * result + player2.hashCode;
+    result = 37 * result + (player1Turn ? 1 : 0);
     return result;
   }
 }
