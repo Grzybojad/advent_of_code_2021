@@ -34,14 +34,15 @@ int part2() {
   HashMap<Game, int> universes = HashMap();
   universes[Game(player1, player2)] = 1;
 
-  const int pointToWin = 21;
+  const int pointsToWin = 21;
 
   bool firstPlayer = true;
 
-  while (universes.keys.any((game) => !game.gameOver(pointToWin))) {
-    var gameKeys = universes.keys.toList();
-    for (var game in gameKeys.where((g) => !g.gameOver(pointToWin))) {
-      var count = universes[game]!;
+  while (universes.keys.any((game) => !game.gameOver(pointsToWin))) {
+    var unfinishedGamesKeys =
+        universes.keys.where((g) => !g.gameOver(pointsToWin)).toList();
+    for (var game in unfinishedGamesKeys) {
+      int count = universes[game]!;
       universes.remove(game);
 
       HashMap<Game, int> gamesAfterRolls = HashMap();
@@ -58,9 +59,14 @@ int part2() {
         int copies = gamesAfterRolls[newGame]!;
         universes[newGame] = count * copies + (universes[newGame] ?? 0);
       }
-
-      firstPlayer = !firstPlayer;
     }
+    firstPlayer = !firstPlayer;
+    // print("\ngames ${universes.values.reduce((a, b) => a + b)}:");
+    // universes.forEach((key, value) {
+    //   if (!key.gameOver(pointsToWin)) {
+    //     print("$key: $value");
+    //   }
+    // });
   }
 
   var totalWins = universes.values.reduce((a, b) => a + b);
@@ -107,8 +113,13 @@ class Game {
 
   Player getLoser() => isPlayer1Winning() ? player2 : player1;
 
+  @override
+  String toString() {
+    return "points: (${player1.points}, ${player2.points}), pos: (${player1.pos}, ${player2.pos})";
+  }
+
   void printValues() {
-    print("p1: ${player1.points} p2: ${player2.points}");
+    print(toString());
   }
 
   @override
