@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 import 'input_reader.dart';
 
 int part1() {
@@ -24,6 +25,65 @@ int part1() {
   return turnedOnCubes.length;
 }
 
+int part2() {
+  var input = readLines('input/day22_input.txt');
+  var steps = input.map((e) => RebootStep.fromString(e));
+
+  List<Cuboid> positiveSections = [];
+  List<Cuboid> negativeSections = [];
+
+  for (var step in steps) {
+    bool isPositiveIntersection =
+        positiveSections.any((c) => step.cuboid.intersectsCuboid(c));
+    bool isNegativeIntersection =
+        negativeSections.any((c) => step.cuboid.intersectsCuboid(c));
+
+    Iterable<Cuboid> negativeToAdd = [];
+
+    if (isPositiveIntersection) {
+      var intersections = positiveSections
+          .where((c) => step.cuboid.intersectsCuboid(c))
+          .map((e) => step.cuboid.intersectionCuboid(e))
+          .toList();
+
+      print("Added ${intersections.length} negative");
+      intersections.forEach(print);
+      negativeToAdd = intersections;
+    }
+
+    if (step.on) {
+      positiveSections.add(step.cuboid);
+
+      if (isNegativeIntersection) {
+        var intersections = negativeSections
+            .where((c) => step.cuboid.intersectsCuboid(c))
+            .map((e) => step.cuboid.intersectionCuboid(e))
+            .toList();
+
+        print("Added ${intersections.length} positive");
+        intersections.forEach(print);
+        positiveSections.addAll(intersections);
+      }
+    }
+
+    negativeSections.addAll(negativeToAdd);
+  }
+
+  negativeSections.map((e) => e.volume()).forEach(print);
+
+  int positiveVolume = positiveSections.isEmpty
+      ? 0
+      : positiveSections.map((c) => c.volume()).reduce((a, b) => a + b);
+  int negativeVolume = negativeSections.isEmpty
+      ? 0
+      : negativeSections.map((c) => c.volume()).reduce((a, b) => a + b);
+
+  print("positive volume $positiveVolume");
+  print("negative volume $negativeVolume");
+
+  return positiveVolume - negativeVolume;
+}
+
 class RebootStep {
   bool on = false;
   late Cuboid cuboid;
@@ -43,6 +103,9 @@ class Cuboid {
   int _minZ = 0;
   int _maxZ = 0;
 
+  Cuboid(
+      this._minX, this._maxX, this._minY, this._maxY, this._minZ, this._maxZ);
+
   Cuboid.fromString(String input) {
     var splitInput = input.split(",");
     var xRange = splitInput[0].split("=")[1].split("..");
@@ -56,6 +119,9 @@ class Cuboid {
     _minZ = int.parse(zRange[0]);
     _maxZ = int.parse(zRange[1]);
   }
+
+  int volume() =>
+      (_minX - _maxX).abs() * (_minY - _maxY).abs() * (_minZ - _maxZ).abs();
 
   bool contains(Point3D point) {
     return point.x >= _minX &&
@@ -92,7 +158,23 @@ class Cuboid {
   }
 
   bool intersectsCuboid(Cuboid other) {
-    return other.corners().any((corner) => contains(corner));
+    return other.corners().any((corner) => contains(corner)) ||
+        corners().any((corner) => other.contains(corner));
+  }
+
+  Cuboid intersectionCuboid(Cuboid other) {
+    return Cuboid(
+        max(_minX, other._minX),
+        min(_maxX, other._maxX),
+        max(_minY, other._minY),
+        min(_maxY, other._maxY),
+        max(_minZ, other._minZ),
+        min(_maxZ, other._maxZ));
+  }
+
+  @override
+  String toString() {
+    return "x=$_minX..$_maxX, y=$_minY..$_maxY, z=$_minZ..$_maxZ";
   }
 }
 
